@@ -77,6 +77,8 @@ class ExampleAnalysis(Module):
         self.h_denpt_minDR=ROOT.TH1F('denpt_minDR',   'denpt_minDR',   20, 0, 200)
         self.h_num_jetpt=ROOT.TH1F('num_jetpt',   'num_jetpt',   20, 0, 200)
         self.h_den_jetpt=ROOT.TH1F('den_jetpt',   'den_jetpt',   20, 0, 200)
+        self.h_num_R=ROOT.TH1F('num_R',   'num_R',   40, 0, 4)
+        self.h_den_R=ROOT.TH1F('den_R',   'den_R',   40, 0, 4)
 
         self.h_numeta=ROOT.TH1F('numeta',   'numeta',   50, -5.0, 5.0)
         self.h_deneta=ROOT.TH1F('deneta',   'deneta',   50, -5.0, 5.0)
@@ -85,17 +87,18 @@ class ExampleAnalysis(Module):
         self.h_test_jetpt=ROOT.TH1F('test_jetpt',   'test_jetpt',   20, 0, 200)
         self.h_testeta=ROOT.TH1F('testeta',   'testeta',   50, -5.0, 5.0)
         self.h_testdm=ROOT.TH1F('testdm',   'testdm',   20, 0, 20)
-        self.h_deltaR_Mu_tau=ROOT.TH1F('deltaR_Mu_tau',   'deltaR_Mu_tau',   100, 0, 10)
-        self.h_deltaR_Mu_Tighttau=ROOT.TH1F('deltaR_Mu_Tighttau',   'deltaR_Mu_Tighttau',   100, 0, 10)
-        self.h_deltaR_Mu_Loosetau=ROOT.TH1F('deltaR_Mu_Loosetau',   'deltaR_Mu_Loosetau',   100, 0, 10)
+        self.h_deltaR_Mu_tau=ROOT.TH1F('deltaR_Mu_tau',   'deltaR_Mu_tau',   50, 0, 5)
+        self.h_deltaR_Mu_Tighttau=ROOT.TH1F('deltaR_Mu_Tighttau',   'deltaR_Mu_Tighttau',   50, 0, 5)
+        self.h_deltaR_Mu_Loosetau=ROOT.TH1F('deltaR_Mu_Loosetau',   'deltaR_Mu_Loosetau',   50, 0, 5)
+        self.h_muonMult=ROOT.TH1F('muonMult',   'muonMult',   10, 0, 10)
         self.h_muonPt=ROOT.TH1F('muonPt',   'muonPt',   20, 0, 200)
         self.h_muonEta=ROOT.TH1F('muonEta',   'muonEta',   50, -5.0, 5.0)
         self.h_muonPt_mindeltaR=ROOT.TH1F('muonPt_mindeltaR',   'muonPt_mindeltaR',   20, 0, 200)
         self.h_muonEta_mindeltaR=ROOT.TH1F('muonEta_mindeltaR',   'muonEta_mindeltaR',   50, -5.0, 5.0)
 
-        self.h_deltaR_E_tau=ROOT.TH1F('deltaR_E_tau',   'deltaR_E_tau',   100, 0, 10)
-        self.h_deltaR_E_Tighttau=ROOT.TH1F('deltaR_E_Tighttau',   'deltaR_E_Tighttau',   100, 0, 10)
-        self.h_deltaR_E_Loosetau=ROOT.TH1F('deltaR_E_Loosetau',   'deltaR_E_Loosetau',   100, 0, 10)
+        self.h_deltaR_E_tau=ROOT.TH1F('deltaR_E_tau',   'deltaR_E_tau',   50, 0, 5)
+        self.h_deltaR_E_Tighttau=ROOT.TH1F('deltaR_E_Tighttau',   'deltaR_E_Tighttau',   50, 0, 5)
+        self.h_deltaR_E_Loosetau=ROOT.TH1F('deltaR_E_Loosetau',   'deltaR_E_Loosetau',   50, 0, 5)
         self.h_electronPt=ROOT.TH1F('electronPt',   'electronPt',   20, 0, 200)
         self.h_electronEta=ROOT.TH1F('electronEta',   'electronEta',   50, -5.0, 5.0)
         self.h_electronPt_mindeltaR=ROOT.TH1F('electronPt_mindeltaR',   'electronPt_mindeltaR',   20, 0, 200)
@@ -109,6 +112,8 @@ class ExampleAnalysis(Module):
         self.addObject(self.h_denpt_minDR)
         self.addObject(self.h_num_jetpt)
         self.addObject(self.h_den_jetpt)
+        self.addObject(self.h_num_R)
+        self.addObject(self.h_den_R)
 
         self.addObject(self.h_numeta)
         self.addObject(self.h_deneta)
@@ -121,6 +126,7 @@ class ExampleAnalysis(Module):
         self.addObject(self.h_deltaR_Mu_tau)
         self.addObject(self.h_deltaR_Mu_Tighttau)
         self.addObject(self.h_deltaR_Mu_Loosetau)
+        self.addObject(self.h_muonMult)
         self.addObject(self.h_muonPt)
         self.addObject(self.h_muonEta)
         self.addObject(self.h_muonPt_mindeltaR)
@@ -190,7 +196,9 @@ class ExampleAnalysis(Module):
 	#select events with 1 tau
         #itau = 0
         checkTight = False
+        numtauIdx = -1
         checkLoose = False
+        dentauIdx = -1
         tauDM = 100
         #tau  = max(tau_selection,key=lambda p: p[1].pt) #fix me
         newtaus = [tau[1] for tau in tau_selection]
@@ -219,8 +227,10 @@ class ExampleAnalysis(Module):
         checkLoose = bool(tau.idDeepTau2017v2p1VSjet >= int(args.looseJetdisc))  and bool(tau.idDeepTau2017v2p1VSmu >= int(args.muondisc)) and bool(tau.idDeepTau2017v2p1VSe >= int(args.eledisc))
         if checkTight: #16: Medium
             numtauP4 += tau.p4()
+            numtauIdx = tau.jetIdx
         if checkLoose: #4: VLoose
             dentauP4 += tau.p4()
+            dentauIdx = tau.jetIdx
         tauP4 += tau.p4()
         tauDM = tau.decayMode
 
@@ -232,16 +242,22 @@ class ExampleAnalysis(Module):
             #print "jets[best_match_idx].pt", jets[best_match_idx].pt
             #print "tau.pt: ", tau.pt
             self.h_test_jetpt.Fill(jets[best_match_idx].pt)
-            if checkTight==True:
-                self.h_num_jetpt.Fill(jets[best_match_idx].pt)
-            if checkLoose==True:
-                self.h_den_jetpt.Fill(jets[best_match_idx].pt)
+            if checkTight==True and numtauIdx >=0:
+                self.h_num_jetpt.Fill(jets[numtauIdx].pt)
+                self.h_num_R.Fill(numtauP4.Pt()/jets[numtauIdx].pt)
+            if checkLoose==True and dentauIdx >=0:
+                self.h_den_jetpt.Fill(jets[dentauIdx].pt)
+                self.h_den_R.Fill(dentauP4.Pt()/jets[dentauIdx].pt)
+                if jets[dentauIdx].pt < 20:
+                    print "dentauP4.Pt(): ", dentauP4.Pt()
+                    print "jets[dentauIdx].pt: ", jets[dentauIdx].pt
+                    print "dentauIdx: ", dentauIdx
 
         deltaR_min = 999.0
         closestMuon = []
-        for mu in selMuons:
-            self.h_muonPt.Fill(mu.pt) 
-            self.h_muonEta.Fill(mu.eta)
+        for mu in muons:
+            #self.h_muonPt.Fill(mu.pt) 
+            #self.h_muonEta.Fill(mu.eta)
             deltaR_mu_tau  = mu.DeltaR(tau)
             if (deltaR_mu_tau < deltaR_min):
                 deltaR_min = deltaR_mu_tau
@@ -285,6 +301,7 @@ class ExampleAnalysis(Module):
         self.h_vpt.Fill(eventSum.Pt()) #fill histogram
         if checkTight==True:
             self.h_numpt.Fill(numtauP4.Pt()) 
+            self.h_muonMult.Fill(len(muons))
         if checkLoose==True:
             self.h_denpt.Fill(dentauP4.Pt()) 
         if checkTight==True and deltaR_min_tightTau > 0.4 and deltaR_min > 0.4:
@@ -300,8 +317,10 @@ class ExampleAnalysis(Module):
         self.h_testdm.Fill(tauDM)
         #self.h_dimuonmass.Fill(diMuon.M())
         self.h_deltaR_Mu_tau.Fill(deltaR_min)
-        self.h_deltaR_Mu_Tighttau.Fill(deltaR_min_tightTau)
-        self.h_deltaR_Mu_Loosetau.Fill(deltaR_min_looseTau)
+        if checkTight:
+            self.h_deltaR_Mu_Tighttau.Fill(deltaR_min_tightTau)
+        if checkLoose:
+            self.h_deltaR_Mu_Loosetau.Fill(deltaR_min_looseTau)
         #self.h_muonPt_mindeltaR.Fill(closestMuon[-1].pt)
         #self.h_muonEta_mindeltaR.Fill(closestMuon[-1].eta)
         #electron
