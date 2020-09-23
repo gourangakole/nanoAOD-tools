@@ -12,6 +12,11 @@ from PhysicsTools.NanoAODTools.postprocessing.framework.eventloop import Module
 import os,sys
 from argparse import ArgumentParser
 
+############ 
+#local run=====
+#python tauFRExampleAnalysis_DoubleMu_v7_cleanTaus.py -f root://cms-xrd-global.cern.ch//store/data/Run2016H/DoubleMuon/NANOAOD/02Apr2020-v1/230000/76DDB6F2-289E-F14C-AF84-3C21C54FA6E4.root -o DoubleMu_2016H_v7_cleanTaus_dm1_EE.root -presel="@Muon_pt.size() >= 2" -tauDecayMode=1 -isTauIn EE -tightJetdisc=16 -looseJetdisc=4 -muondisc=8 -eledisc=32
+############
+
 parser = ArgumentParser()
 
 # https://martin-thoma.com/how-to-parse-command-line-arguments-in-python/
