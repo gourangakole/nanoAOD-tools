@@ -10,7 +10,6 @@ python tauFRExampleAnalysis_DoubleMu_v7_cleanTaus.py -h
 
 * create a text file with NanoAOD files using dasgclient
 
-e.g.
 ```
 NanoAOD_DoubleMuon_2016C_whole.txt
 ```
