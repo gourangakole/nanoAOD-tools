@@ -77,12 +77,28 @@ class ExampleAnalysis(Module):
         self.h_denpt_minDR=ROOT.TH1F('denpt_minDR',   'denpt_minDR',   20, 0, 200)
         self.h_num_jetpt=ROOT.TH1F('num_jetpt',   'num_jetpt',   20, 0, 200)
         self.h_den_jetpt=ROOT.TH1F('den_jetpt',   'den_jetpt',   20, 0, 200)
+        self.h_num_jetchEmEF=ROOT.TH1F('num_jetchEmEF',   'num_jetchEmEF',   100, 0, 1)
+        self.h_den_jetchEmEF=ROOT.TH1F('den_jetchEmEF',   'den_jetchEmEF',   100, 0, 1)
+        self.h_num_jetchHEF=ROOT.TH1F('num_jetchHEF',   'num_jetchHEF',   100, 0, 1)
+        self.h_den_jetchHEF=ROOT.TH1F('den_jetchHEF',   'den_jetchHEF',   100, 0, 1)
+        self.h_num_jetEmOverH=ROOT.TH1F('num_jetEmOverH',   'num_jetEmOverH',   50, 0, 5)
+        self.h_den_jetEmOverH=ROOT.TH1F('den_jetEmOverH',   'den_jetEmOverH',   50, 0, 5)
+        self.h_num_jetchFPV0EF=ROOT.TH1F('num_jetchFPV0EF',   'num_jetchFPV0EF',   100, 0, 1)
+        self.h_num_jetchFPV1EF=ROOT.TH1F('num_jetchFPV1EF',   'num_jetchFPV1EF',   100, 0, 1)
+        self.h_num_jetchFPV2EF=ROOT.TH1F('num_jetchFPV2EF',   'num_jetchFPV2EF',   100, 0, 1)
+        self.h_num_jetchFPV3EF=ROOT.TH1F('num_jetchFPV3EF',   'num_jetchFPV3EF',   100, 0, 1)
+        self.h_den_jetchFPV0EF=ROOT.TH1F('den_jetchFPV0EF',   'den_jetchFPV0EF',   100, 0, 1)
+        self.h_den_jetchFPV1EF=ROOT.TH1F('den_jetchFPV1EF',   'den_jetchFPV1EF',   100, 0, 1)
+        self.h_den_jetchFPV2EF=ROOT.TH1F('den_jetchFPV2EF',   'den_jetchFPV2EF',   100, 0, 1)
+        self.h_den_jetchFPV3EF=ROOT.TH1F('den_jetchFPV3EF',   'den_jetchFPV3EF',   100, 0, 1)
+
         self.h_num_R=ROOT.TH1F('num_R',   'num_R',   40, 0, 4)
         self.h_den_R=ROOT.TH1F('den_R',   'den_R',   40, 0, 4)
 
         self.h_numeta=ROOT.TH1F('numeta',   'numeta',   50, -5.0, 5.0)
         self.h_deneta=ROOT.TH1F('deneta',   'deneta',   50, -5.0, 5.0)
         self.h_dimuonmass=ROOT.TH1F('dimuonmass',   'dimuonmass',   40, 50, 130)
+        self.h_deltaR_MuMu=ROOT.TH1F('deltaR_MuMu',   'deltaR_MuMu',   50, 0, 5)
         self.h_testpt=ROOT.TH1F('testpt',   'testpt',   20, 0, 200)
         self.h_test_jetpt=ROOT.TH1F('test_jetpt',   'test_jetpt',   20, 0, 200)
         self.h_testeta=ROOT.TH1F('testeta',   'testeta',   50, -5.0, 5.0)
@@ -112,6 +128,20 @@ class ExampleAnalysis(Module):
         self.addObject(self.h_denpt_minDR)
         self.addObject(self.h_num_jetpt)
         self.addObject(self.h_den_jetpt)
+        self.addObject(self.h_num_jetchEmEF)
+        self.addObject(self.h_den_jetchEmEF)
+        self.addObject(self.h_num_jetchHEF)
+        self.addObject(self.h_den_jetchHEF)
+        self.addObject(self.h_num_jetEmOverH)
+        self.addObject(self.h_den_jetEmOverH)
+        self.addObject(self.h_num_jetchFPV0EF)
+        self.addObject(self.h_num_jetchFPV1EF)
+        self.addObject(self.h_num_jetchFPV2EF)
+        self.addObject(self.h_num_jetchFPV3EF)
+        self.addObject(self.h_den_jetchFPV0EF)
+        self.addObject(self.h_den_jetchFPV1EF)
+        self.addObject(self.h_den_jetchFPV2EF)
+        self.addObject(self.h_den_jetchFPV3EF)
         self.addObject(self.h_num_R)
         self.addObject(self.h_den_R)
 
@@ -122,6 +152,7 @@ class ExampleAnalysis(Module):
         self.addObject(self.h_testeta)
         self.addObject(self.h_testdm)
         self.addObject(self.h_dimuonmass)
+        self.addObject(self.h_deltaR_MuMu)
 
         self.addObject(self.h_deltaR_Mu_tau)
         self.addObject(self.h_deltaR_Mu_Tighttau)
@@ -180,7 +211,7 @@ class ExampleAnalysis(Module):
         selMuons = []
         for lep in muons :     #loop on muons
             #print "muon loop"
-            if lep.pt<20: continue
+            if lep.pt<18: continue
             #self.h_muonPt.Fill(lep.pt) #imporatnt GKOLE move at the muon loop later
             #self.h_muonEta.Fill(lep.eta)
             #if abs(lep.eta)>2.4: continue
@@ -192,7 +223,20 @@ class ExampleAnalysis(Module):
         icount += 1
         self.h_counter.Fill(icount)
         #print "len(selMuons): ", len(selMuons)
-
+        # Muons are already sorted #IMP
+        if selMuons[0].pt < 26: return False
+        if selMuons[1].pt < 18: return False
+        if (selMuons[0].charge*selMuons[1].charge) > 0: return False
+        diMuon = selMuons[0].p4() + selMuons[1].p4()
+        if diMuon.M() < 70 or diMuon.M() > 110: return False
+        # deltaR beween two muons
+        deltaR_mm = selMuons[0].DeltaR(selMuons[1])
+        # counter for on-Z
+        icount += 1
+        self.h_counter.Fill(icount)
+        #for mu in selMuons:
+        #    print "mu:  ", mu, "& mu.pt: ",mu.pt, "& mu.charge",  mu.charge
+        
 	#select events with 1 tau
         #itau = 0
         checkTight = False
@@ -245,19 +289,29 @@ class ExampleAnalysis(Module):
             if checkTight==True and numtauIdx >=0:
                 self.h_num_jetpt.Fill(jets[numtauIdx].pt)
                 self.h_num_R.Fill(numtauP4.Pt()/jets[numtauIdx].pt)
+                self.h_num_jetchEmEF.Fill(jets[numtauIdx].chEmEF)
+                self.h_num_jetchHEF.Fill(jets[numtauIdx].chHEF)
+                self.h_num_jetEmOverH.Fill(jets[numtauIdx].chEmEF/jets[numtauIdx].chHEF)
+                self.h_num_jetchFPV0EF.Fill(jets[numtauIdx].chFPV0EF)
+                self.h_num_jetchFPV1EF.Fill(jets[numtauIdx].chFPV1EF)
+                self.h_num_jetchFPV2EF.Fill(jets[numtauIdx].chFPV2EF)
+                self.h_num_jetchFPV3EF.Fill(jets[numtauIdx].chFPV3EF)
             if checkLoose==True and dentauIdx >=0:
                 self.h_den_jetpt.Fill(jets[dentauIdx].pt)
                 self.h_den_R.Fill(dentauP4.Pt()/jets[dentauIdx].pt)
-                if jets[dentauIdx].pt < 20:
-                    print "dentauP4.Pt(): ", dentauP4.Pt()
-                    print "jets[dentauIdx].pt: ", jets[dentauIdx].pt
-                    print "dentauIdx: ", dentauIdx
+                self.h_den_jetchEmEF.Fill(jets[dentauIdx].chEmEF)
+                self.h_den_jetchHEF.Fill(jets[dentauIdx].chHEF)
+                self.h_den_jetEmOverH.Fill(jets[dentauIdx].chEmEF/jets[dentauIdx].chHEF)
+                self.h_den_jetchFPV0EF.Fill(jets[dentauIdx].chFPV0EF)
+                self.h_den_jetchFPV1EF.Fill(jets[dentauIdx].chFPV1EF)
+                self.h_den_jetchFPV2EF.Fill(jets[dentauIdx].chFPV2EF)
+                self.h_den_jetchFPV3EF.Fill(jets[dentauIdx].chFPV3EF)
 
         deltaR_min = 999.0
         closestMuon = []
         for mu in muons:
-            #self.h_muonPt.Fill(mu.pt) 
-            #self.h_muonEta.Fill(mu.eta)
+            self.h_muonPt.Fill(mu.pt) 
+            self.h_muonEta.Fill(mu.eta)
             deltaR_mu_tau  = mu.DeltaR(tau)
             if (deltaR_mu_tau < deltaR_min):
                 deltaR_min = deltaR_mu_tau
@@ -277,13 +331,6 @@ class ExampleAnalysis(Module):
             deltaR_min_tightTau = deltaR_min
         #print "deltaR_min", deltaR_min
         #if len(selMuons) < 2: return False
-        #if (selMuons[0].charge*selMuons[1].charge) > 0: return False
-        #diMuon = selMuons[0].p4() + selMuons[1].p4()
-        #if diMuon.M() < 70 or diMuon.M() > 110: return False
-        #for mu in selMuons:
-        #    print "mu.charge:  ", mu.charge
-        #diMuon
-        # add Z mass <70-110>
         #eventSum += lep.p4()
         closestElectron = []
         deltaR_min_e_tau = 999.0
@@ -315,7 +362,8 @@ class ExampleAnalysis(Module):
         self.h_testpt.Fill(tauP4.Pt())
         self.h_testeta.Fill(tauP4.Eta())
         self.h_testdm.Fill(tauDM)
-        #self.h_dimuonmass.Fill(diMuon.M())
+        self.h_dimuonmass.Fill(diMuon.M())
+        self.h_deltaR_MuMu.Fill(deltaR_mm)
         self.h_deltaR_Mu_tau.Fill(deltaR_min)
         if checkTight:
             self.h_deltaR_Mu_Tighttau.Fill(deltaR_min_tightTau)
