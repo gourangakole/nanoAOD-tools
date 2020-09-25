@@ -288,20 +288,24 @@ class ExampleAnalysis(Module):
             self.h_test_jetpt.Fill(jets[best_match_idx].pt)
             if checkTight==True and numtauIdx >=0:
                 self.h_num_jetpt.Fill(jets[numtauIdx].pt)
-                self.h_num_R.Fill(numtauP4.Pt()/jets[numtauIdx].pt)
+                if jets[numtauIdx].pt > 0:
+                    self.h_num_R.Fill(numtauP4.Pt()/jets[numtauIdx].pt)
                 self.h_num_jetchEmEF.Fill(jets[numtauIdx].chEmEF)
                 self.h_num_jetchHEF.Fill(jets[numtauIdx].chHEF)
-                self.h_num_jetEmOverH.Fill(jets[numtauIdx].chEmEF/jets[numtauIdx].chHEF)
+                if jets[numtauIdx].chHEF > 0:
+                    self.h_num_jetEmOverH.Fill(jets[numtauIdx].chEmEF/jets[numtauIdx].chHEF)
                 self.h_num_jetchFPV0EF.Fill(jets[numtauIdx].chFPV0EF)
                 self.h_num_jetchFPV1EF.Fill(jets[numtauIdx].chFPV1EF)
                 self.h_num_jetchFPV2EF.Fill(jets[numtauIdx].chFPV2EF)
                 self.h_num_jetchFPV3EF.Fill(jets[numtauIdx].chFPV3EF)
             if checkLoose==True and dentauIdx >=0:
                 self.h_den_jetpt.Fill(jets[dentauIdx].pt)
-                self.h_den_R.Fill(dentauP4.Pt()/jets[dentauIdx].pt)
+                if jets[dentauIdx].pt > 0:
+                    self.h_den_R.Fill(dentauP4.Pt()/jets[dentauIdx].pt)
                 self.h_den_jetchEmEF.Fill(jets[dentauIdx].chEmEF)
                 self.h_den_jetchHEF.Fill(jets[dentauIdx].chHEF)
-                self.h_den_jetEmOverH.Fill(jets[dentauIdx].chEmEF/jets[dentauIdx].chHEF)
+                if jets[dentauIdx].chHEF > 0:
+                    self.h_den_jetEmOverH.Fill(jets[dentauIdx].chEmEF/jets[dentauIdx].chHEF)
                 self.h_den_jetchFPV0EF.Fill(jets[dentauIdx].chFPV0EF)
                 self.h_den_jetchFPV1EF.Fill(jets[dentauIdx].chFPV1EF)
                 self.h_den_jetchFPV2EF.Fill(jets[dentauIdx].chFPV2EF)
