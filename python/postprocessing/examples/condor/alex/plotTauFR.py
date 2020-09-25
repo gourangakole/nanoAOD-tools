@@ -15,7 +15,7 @@ EXAMPLES:
 
 
 LAST USED: 
-
+python plotTauFR.py -f root://cms-xrd-global.cern.ch//store/data/Run2016H/DoubleMuon/NANOAOD/02Apr2020-v1/230000/76DDB6F2-289E-F14C-AF84-3C21C54FA6E4.root -o DoubleMu.root
 
 TEMPLATES: 
 
@@ -30,7 +30,22 @@ from PhysicsTools.NanoAODTools.postprocessing.framework.postprocessor import Pos
 
 from PhysicsTools.NanoAODTools.postprocessing.framework.datamodel import Collection
 from PhysicsTools.NanoAODTools.postprocessing.framework.eventloop import Module
+from argparse import ArgumentParser
 
+parser = ArgumentParser()
+
+# https://martin-thoma.com/how-to-parse-command-line-arguments-in-python/
+# Add more options if you like
+parser.add_argument("-f", "--file", dest="inputfile",
+                    help="input FILE", metavar="FILE")
+parser.add_argument("-o", "--output", dest="outputfile", default="output.root",
+                    help="outut FILE", metavar="FILE")
+args = parser.parse_args()
+
+print("InputFile:  ",args.inputfile)
+print("OutputFile: ",args.outputfile)
+
+inputFname = args.inputfile
 
 def getListOfFiles(dataset="Run2016B-DoubleMuon-NANOAOD-02Apr2020"):
     '''
@@ -85,7 +100,7 @@ class ExampleAnalysis(Module):
         self.hMuonPt_MinDeltaR         = ROOT.TH1F('MuonPt_MinDeltaR'        , 'MuonPt_MinDeltaR        ; #mu p_{T} (GeV); Occur',  40,  0.0, 200.0)
         self.hMuonEta_MinDeltaR        = ROOT.TH1F('MuonEta_MinDeltaR'       , 'MuonEta_MinDeltaR       ; #mu #eta; Occur'       ,  50, -2.5,   2.5)
         self.hMuonDxy_MinDeltaR        = ROOT.TH1F('MuonDxy_MinDeltaR'       , 'MuonDxy_MinDeltaR       ; d_{xy} (cm);Occur'  , 200,  0.0,  0.1);
-        self.hMuonDz_MinDeltaR         = ROOT.TH1F('MuonDz_MinDeltaR'        , 'MuonDz_MinDeltaR        ; d_{z} (cm);Occur'   , 200,  0.0,  0.);
+        self.hMuonDz_MinDeltaR         = ROOT.TH1F('MuonDz_MinDeltaR'        , 'MuonDz_MinDeltaR        ; d_{z} (cm);Occur'   , 200,  0.0,  0.1);
         self.hMuonSIP3D_MinDeltaR      = ROOT.TH1F('MuonSIP3D_MinDeltaR'     , 'MuonSIP3D_MinDeltaR     ; SIP_{3D}=|IP/#sigma_{IP}^{3D}|;Occur', 50, 0.0, 5.0);
         self.hMuonMvaID_MinDeltaR      = ROOT.TH1F('MuonMvaID_MinDeltaR'     , 'MuonMvaID_MinDeltaR     ; MVA ID;Occur'    , 5, 0.0, 5.0);
         self.hMuonIsPFCand_MinDeltaR   = ROOT.TH1F('MuonIsPFCand_MinDeltaR'  , 'MuonIsPFCand_MinDeltaR  ; is PF cand;Occur', 2, 0.0, 2.0);
@@ -308,7 +323,13 @@ preselection = "Tau_pt > 20 && Tau_decayMode == 0"
 preselection+= "&& @Muon_pt.size() >= 2"
 preselection+= "&& @Tau_pt.size() >= 1"
 
-#files=[" root://cms-xrd-global.cern.ch//store/mc/RunIISummer16NanoAOD/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/NANOAODSIM/PUMoriond17_05Feb2018_94X_mcRun2_asymptotic_v2-v1/40000/2CE738F9-C212-E811-BD0E-EC0D9A8222CE.root"]
 
-p = PostProcessor(".", getListOfFiles(), cut=preselection, branchsel=None, modules=[ExampleAnalysis()], noOut=True, histFileName="tauFR.root", histDirName="plots")
+files=[inputFname]
+print "files", files
+
+#files=[" root://cms-xrd-global.cern.ch//store/mc/RunIISummer16NanoAOD/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/NANOAODSIM/PUMoriond17_05Feb2018_94X_mcRun2_asymptotic_v2-v1/40000/2CE738F9-C212-E811-BD0E-EC0D9A8222CE.root"]
+#files=[
+#    "root://cms-xrd-global.cern.ch//store/data/Run2016C/DoubleMuon/NANOAOD/02Apr2020-v1/40000/1B5DA83E-CD1B-1D49-9C73-29F3CD221647.root",
+#]
+p = PostProcessor(".", files, cut=preselection, branchsel=None, modules=[ExampleAnalysis()], noOut=True, histFileName=args.outputfile, histDirName="plots")
 p.run()
