@@ -229,7 +229,7 @@ class ExampleAnalysis(Module):
         #print "len(selMuons): ", len(selMuons)
         # Muons are already sorted #IMP
         if selMuons[0].pt < 26: return False
-        if selMuons[1].pt < 18: return False
+        if selMuons[1].pt < 10: return False
         if (selMuons[0].charge*selMuons[1].charge) > 0: return False
         diMuon = selMuons[0].p4() + selMuons[1].p4()
         if diMuon.M() < 70 or diMuon.M() > 110: return False

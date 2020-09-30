@@ -10,3 +10,11 @@ condor_submit  jdl/submitDoubleMuon_2016H_0_EB_16_4_8_0.jdl
 condor_submit  jdl/submitDoubleMuon_2016H_0_EB_16_4_0_32.jdl
 #condor_submit  jdl/submitDoubleMuon_2016H_0_EE_16_4_8_32.jdl 
 #condor_submit  jdl/submitDoubleMuon_2016H_1_EB_16_4_8_32.jdl 
+
+#29Sept
+condor_submit  jdl/submitDoubleMuon_2016C_0_EB_16_4_1_32.jdl
+condor_submit  jdl/submitDoubleMuon_2016C_0_EB_16_4_2_32.jdl
+condor_submit  jdl/submitDoubleMuon_2016C_0_EB_16_4_4_32.jdl
+condor_submit  jdl/submitDoubleMuon_2016H_0_EB_16_4_1_32.jdl
+condor_submit  jdl/submitDoubleMuon_2016H_0_EB_16_4_2_32.jdl
+condor_submit  jdl/submitDoubleMuon_2016H_0_EB_16_4_4_32.jdl
